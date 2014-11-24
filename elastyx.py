@@ -149,7 +149,7 @@ class MRImpressionStats(MRJob):
         else:
             table = 'impression_stats'
         combined = {k: sum([v[k] for v in counts]) for k in counts[0]}
-        yield table, dict(data.items() + combined.items())
+        yield table, dict(data, **combined)
 
     def mapper2(self, table, rows):
         yield table, rows
