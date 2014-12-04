@@ -1,13 +1,21 @@
 from datetime import datetime
 from mrjob.job import MRJob
+from mrjob.protocol import JSONProtocol
 from sys import maxint
 from ua_parser import user_agent_parser
 import geoip2.database
 import json
 import re
 
+class RealJSONProtocol(JSONProtocol):
+    def read(self, line):
+        return json.loads(line)
+    def write(self, key, value):
+        return json.dumps([key,value])
+
 
 class MRImpressionStats(MRJob):
+    OUTPUT_PROTOCOL = RealJSONProtocol
 
     locale_whitelist = [
         'en-us'
@@ -150,24 +158,6 @@ class MRImpressionStats(MRJob):
             table = 'impression_stats'
         combined = {k: sum([v[k] for v in counts]) for k in counts[0]}
         yield table, dict(data, **combined)
-
-    def mapper2(self, table, rows):
-        yield table, rows
-
-    def combiner2(self, table, rows):
-        yield table, list(rows)
-
-    def reducer2(self, table, rows):
-        yield table, len(list(rows))
-
-    def steps(self):
-        return [self.mr(mapper=self.mapper,
-                        combiner=self.combiner,
-                        reducer=self.reducer),
-                self.mr(#mapper=self.mapper2,
-#                       combiner=self.combiner2,
-                        reducer=self.reducer2)]
-
 
 if __name__ == '__main__':
     MRImpressionStats.run()
