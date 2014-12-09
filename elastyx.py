@@ -149,12 +149,8 @@ class MRImpressionStats(MRJob):
 
     def reducer(self, data, counts):
         counts = [count for count in counts]
-        if 'newtabs' in counts[0]:
-            table = 'newtab_stats'
-        else:
-            table = 'impression_stats'
         combined = {k: sum([v[k] for v in counts]) for k in counts[0]}
-        yield (table + '/' + data['date']), dict(data, **combined)
+        yield None, dict(data, **combined)
 
 if __name__ == '__main__':
     MRImpressionStats.run()
