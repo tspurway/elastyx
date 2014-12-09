@@ -12,6 +12,7 @@ import re
 
 class MRImpressionStats(MRJob):
     OUTPUT_PROTOCOL = JSONValueProtocol
+    HADOOP_OUTPUT_FORMAT = 'elastyxOutput.MultiOutputFormat'
 
     locale_whitelist = [
         'en-us'

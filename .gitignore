@@ -1,5 +1,6 @@
 *.pyc
 *.swp
 *.swo
-*.sample
+*.pem
+/input/
 /output/
