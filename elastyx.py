@@ -1,21 +1,17 @@
+#!/usr/bin/env python2.7
+
 from datetime import datetime
 from mrjob.job import MRJob
-from mrjob.protocol import JSONProtocol
+from mrjob.protocol import JSONValueProtocol
 from sys import maxint
 from ua_parser import user_agent_parser
 import geoip2.database
 import json
 import re
 
-class RealJSONProtocol(JSONProtocol):
-    def read(self, line):
-        return json.loads(line)
-    def write(self, key, value):
-        return json.dumps([key,value])
-
 
 class MRImpressionStats(MRJob):
-    OUTPUT_PROTOCOL = RealJSONProtocol
+    OUTPUT_PROTOCOL = JSONValueProtocol
 
     locale_whitelist = [
         'en-us'
@@ -157,7 +153,7 @@ class MRImpressionStats(MRJob):
         else:
             table = 'impression_stats'
         combined = {k: sum([v[k] for v in counts]) for k in counts[0]}
-        yield table, dict(data, **combined)
+        yield (table + '/' + data['date']), dict(data, **combined)
 
 if __name__ == '__main__':
     MRImpressionStats.run()
