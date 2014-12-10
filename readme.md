@@ -17,3 +17,4 @@ it basically works, I just need to get my last bits in order:
 * actually use a geop database
 * insert the real `locale_whitelist`
 * deploying jars from local dir or s3 instead of github
+* determine permissions required to run emr jobs
