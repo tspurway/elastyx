@@ -23,6 +23,8 @@ class EMRJobRunnerWithFix(EMRJobRunner):
     def _job_flow_args(self, persistent=False, steps=None):
         args = super(EMRJobRunnerWithFix, self)._job_flow_args(persistent, steps)
 
+        print(self._opts['emr_api_params'])
+
         if self._opts['emr_api_params']:
             args['api_params'] = self._opts['emr_api_params']
             if self._opts['visible_to_all_users']:
