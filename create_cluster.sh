@@ -9,8 +9,8 @@ python2 elastyx.py \
     --hadoop-arg -libjars \
     --hadoop-arg /home/hadoop/build/elastyxOutput.jar,/home/hadoop/build/org.json.jar \
     --no-output \
-    --output-dir s3://tiles-elastyx-stage-1/output/$step_num/ \
-    s3://tiles-elastyx-stage-1/input/sample1 \
+    --output-dir s3://tiles-stage-1-queue-s3-bucket-abcdef/elastyx/$step_num/ \
+    s3://tiles-stage-1-queue-s3-bucket-abcdefg/impression/2099-12-31/zyxwvut \
     --emr-job-flow-id $job_id
 
 
