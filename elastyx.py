@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.7
 
 from datetime import datetime
-from mrjob.emr import EMRJobRunner
+from mrjob.emr import EMRJobRunner, EMRRunnerOptionStore
 from mrjob.job import MRJob
 from mrjob.protocol import JSONValueProtocol
 from sys import maxint
@@ -11,10 +11,17 @@ import json
 import re
 
 
-class FlexibleEMRJobRunner(EMRJobRunner):
+class EMRRunnerOptionStoreWithFix(EMRRunnerOptionStore):
+    ALLOWED_KEYS = EMRRunnerOptionStore.ALLOWED_KEYS.union(set([
+        'emr_api_params',
+    ]))
+
+
+class EMRJobRunnerWithFix(EMRJobRunner):
+    OPTION_STORE_CLASS = EMRRunnerOptionStoreWithFix
 
     def _job_flow_args(self, persistent=False, steps=None):
-        args = super(FlexibleEMRJobRunner, self)._job_flow_args(persistent, steps)
+        args = super(EMRJobRunnerWithFix, self)._job_flow_args(persistent, steps)
 
         if self._opts['emr_api_params']:
             args['api_params'] = self._opts['emr_api_params']
@@ -169,7 +176,7 @@ class MRImpressionStats(MRJob):
     # workaround for STS bug
     def make_runner(self):
         if self.options.runner == 'emr':
-            return FlexibleEMRJobRunner(**self.emr_job_runner_kwargs())
+            return EMRJobRunnerWithFix(**self.emr_job_runner_kwargs())
         else:
             return super(MRImpressionStats, self).make_runner(self)
 
