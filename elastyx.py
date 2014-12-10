@@ -1,6 +1,7 @@
 #!/usr/bin/env python2.7
 
 from datetime import datetime
+from mrjob.emr import EMRJobRunner
 from mrjob.job import MRJob
 from mrjob.protocol import JSONValueProtocol
 from sys import maxint
@@ -8,6 +9,19 @@ from ua_parser import user_agent_parser
 import geoip2.database
 import json
 import re
+
+
+class FlexibleEMRJobRunner(EMRJobRunner):
+
+    def _job_flow_args(self, persistent=False, steps=None):
+        args = super(EMRJobRunner, self)._job_flow_args(persistent, steps)
+
+        if self._opts['emr_api_params']:
+            args['api_params'] = self._opts['emr_api_params']
+            if self._opts['visible_to_all_users']:
+                args['api_params']['VisibleToAllUsers'] = 'true'
+
+        return args
 
 
 class MRImpressionStats(MRJob):
@@ -151,6 +165,13 @@ class MRImpressionStats(MRJob):
         counts = [count for count in counts]
         combined = {k: sum([v[k] for v in counts]) for k in counts[0]}
         yield None, dict(data, **combined)
+
+    # workaround for STS bug
+    def make_runner(self):
+        if self.options.runner == 'emr':
+            return FlexibleEMRJobRunner(**self.emr_job_runner_kwargs())
+        else:
+            return super(MRJob, self).make_runner(self)
 
 if __name__ == '__main__':
     MRImpressionStats.run()
