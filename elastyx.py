@@ -14,7 +14,7 @@ import re
 class FlexibleEMRJobRunner(EMRJobRunner):
 
     def _job_flow_args(self, persistent=False, steps=None):
-        args = super(EMRJobRunner, self)._job_flow_args(persistent, steps)
+        args = super(FlexibleEMRJobRunner, self)._job_flow_args(persistent, steps)
 
         if self._opts['emr_api_params']:
             args['api_params'] = self._opts['emr_api_params']
@@ -171,7 +171,7 @@ class MRImpressionStats(MRJob):
         if self.options.runner == 'emr':
             return FlexibleEMRJobRunner(**self.emr_job_runner_kwargs())
         else:
-            return super(MRJob, self).make_runner(self)
+            return super(MRImpressionStats, self).make_runner(self)
 
 if __name__ == '__main__':
     MRImpressionStats.run()
