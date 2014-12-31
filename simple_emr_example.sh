@@ -1,5 +1,3 @@
-step_num=1
-
 bucket=tiles-stage-1-queue-s3-bucket-abcdefghijkl
 
 python2 elastyx.py \
@@ -11,5 +9,4 @@ python2 elastyx.py \
     --s3-log-uri s3://$bucket/log/ \
     --s3-scratch-uri s3://$bucket/tmp/ \
     --no-output \
-    --output-dir s3://$bucket/elastyx/$step_num/ \
     s3://$bucket/impression/
