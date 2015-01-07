@@ -52,6 +52,7 @@ while true; do
         --s3-log-uri s3://$BUCKET/log/ \
         --s3-scratch-uri s3://$BUCKET/tmp/ \
         --no-output \
+        --visible-to-all-users \
         $logs
 
     # copy output to redshift
